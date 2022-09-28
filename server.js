@@ -1,6 +1,6 @@
 const express = require('express')
 const { graphqlHTTP } = require('express-graphql')
-const { GraphQLSchema, GraphQLObjectType, GraphQLList, GraphQLString } = require('graphql')
+const { GraphQLSchema, GraphQLObjectType, GraphQLList, GraphQLString, GraphQLNonNull } = require('graphql')
 const mongoose = require('mongoose')
 const nodefetch = (...args) => import('node-fetch').then(({default:fetch}) => fetch(...args))
 
@@ -120,8 +120,41 @@ const RootQueryType = new GraphQLObjectType({
     })
 })
 
+const RootMutationType = new GraphQLObjectType({
+    name: 'Mutation',
+    description: 'Root Mutation',
+    fields: () => ({
+        addMovie: {
+            type: graphMovies.movieType,
+            description: 'Add movie to the system',
+            args:  {
+                id: { type: GraphQLNonNull(GraphQLString) },
+                title: { type: GraphQLNonNull(GraphQLString) },
+                dir: { type: GraphQLNonNull(GraphQLString) },
+                platform: { type: GraphQLNonNull(GraphQLString) }
+            },
+            resolve: async (parent, args) => {
+                const movie = new dbModal({
+                    _id: args.id,
+                    id: args.id,
+                    title: args.title,
+                    dir: args. dir,
+                    platform: args.platform
+                })
+                try {
+                    const returnMovie = await movie.save()
+                    return returnMovie
+                } catch (err) {
+                    console.log(err.message)
+                }
+            }
+        }
+    })
+})
+
 const schema = new GraphQLSchema({
-    query:RootQueryType
+    query:RootQueryType,
+    mutation:RootMutationType
 })
 
 app.use('/graphql', graphqlHTTP({
