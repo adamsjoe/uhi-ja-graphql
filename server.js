@@ -1,4 +1,6 @@
 const express = require('express')
+const cors = require('cors')
+
 const { graphqlHTTP } = require('express-graphql')
 const { GraphQLSchema, GraphQLObjectType, GraphQLList, GraphQLString, GraphQLNonNull } = require('graphql')
 const mongoose = require('mongoose')
@@ -7,6 +9,7 @@ const nodefetch = (...args) => import('node-fetch').then(({default:fetch}) => fe
 const app = express()
 const port = 5000
 
+app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
 
