@@ -4,7 +4,8 @@
   "description": "GraphQL intro",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "update": "nodemon server.js"
   },
   "author": "Joseph Adams",
   "license": "ISC",
